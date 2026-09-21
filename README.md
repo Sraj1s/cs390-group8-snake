@@ -1,68 +1,35 @@
-# cs390-group8-snake
-# Snake — CS390 Group 8
+Snake Lexer - Part 2
 
-Snake is a small interpreted programming language being designed for our CS390 final project. It aims to provide simple, readable syntax for learning how programming languages and interpreters work.
+This project contains the lexer for the Snake programming language.
 
-## Group Members
+Files:
+- lexer.py - Reads Snake source code and converts it into tokens.
+- tokens.py - Defines the different token types used by the lexer.
+- test_lexer.py - Contains the test cases for the lexer.
+- lexer_output.txt - Shows the output from the test cases.
 
-* Galib Yasar Kabir
-* Chase LaValle
-* Sumit Raj
+How to Run:
 
-## Project Status
+1. Make sure Python 3 is installed.
+2. Place all project files in the same folder.
+3. Open a terminal in the project folder.
+4. Run:
 
-We are currently working on **Part 1: Language Design and BNF/EBNF Grammar**. This stage establishes the language syntax, features, grammar, and sample programs before implementation.
+   python test_lexer.py
 
-The interpreter has not been implemented yet.
+The test file runs five different test cases:
+1. Variable declaration
+2. Arithmetic expression
+3. Display statement
+4. Control structure
+5. Invalid input
 
-## Planned Features
+The lexer recognizes Snake keywords, identifiers, numbers, arithmetic
+operators, comparison operators, assignment, parentheses, braces,
+commas, semicolons, whitespace, and comments.
 
-* Variable declaration with `var` and assignment with `=`
-* Numeric values
-* Arithmetic operators: `+`, `-`, `*`, `/`
-* Parentheses and operator precedence
-* Comparison operators: `==`, `!=`, `<`, `>`, `<=`, `>=`
-* Output using `display`
-* Conditional statements using `if` and `else`
-* Repetition using `while`
-* Functions using `define`, with parameters and `return` values
-* Basic variable scope
-* An additional feature to be finalized by the group
+Invalid characters produce an error showing the line and column where
+the character was found.
 
-## Language Example
-
-```text
-define add(a, b) {
-    return a + b;
-}
-
-var result = add(5, 3);
-display(result);
-```
-
-Expected output:
-
-```text
-8
-```
-
-## Repository Contents
-
-* `README.md` — Project overview.
-* `CS390_FinalProject_Group8_Part1 2.docx` — Part 1 language design draft.
-
-Implementation code, tests, and additional sample programs will be added as the project develops.
-
-## Next Steps
-
-* Finalize the language rules and EBNF grammar.
-* Review three complete sample programs.
-* Select and describe the additional feature.
-* Agree on and document each member’s responsibilities.
-* Complete the AI Use Statement.
-* Begin implementing the language in later project stages.
-
-## AI Assistance
-
-ChatGPT was used to help set up this GitHub repository and draft this README. The group’s Part 1 submission will include a separate AI Use Statement describing AI assistance with the assignment.
-
+The grammar from Part 1 was not changed for this part of the project.
+GitHub Link for Group 8: https://github.com/Sraj1s/cs390-group8-snake
