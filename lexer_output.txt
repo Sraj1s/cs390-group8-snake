@@ -1,0 +1,44 @@
+Test 1: Variable Declaration
+VAR(var)
+IDENTIFIER(x)
+ASSIGN(=)
+NUMBER(10)
+SEMICOLON(;)
+EOF
+
+Test 2: Arithmetic Expression
+VAR(var)
+IDENTIFIER(total)
+ASSIGN(=)
+NUMBER(5)
+PLUS(+)
+NUMBER(3)
+MULTIPLY(*)
+NUMBER(2)
+SEMICOLON(;)
+EOF
+
+Test 3: Display Statement
+DISPLAY(display)
+LPAREN(()
+IDENTIFIER(total)
+RPAREN())
+SEMICOLON(;)
+EOF
+
+Test 4: Control Structure
+IF(if)
+IDENTIFIER(x)
+GREATER(>)
+NUMBER(5)
+LBRACE({)
+DISPLAY(display)
+LPAREN(()
+IDENTIFIER(x)
+RPAREN())
+SEMICOLON(;)
+RBRACE(})
+EOF
+
+Test 5: Invalid Input
+Unrecognized character '@' at line 1, column 12
