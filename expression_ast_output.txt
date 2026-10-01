@@ -1,0 +1,58 @@
+Expression: 2 + 3 * 4
+{
+  "type": "BinaryOpNode",
+  "left": {
+    "type": "NumberNode",
+    "value": 2
+  },
+  "operator": "+",
+  "right": {
+    "type": "BinaryOpNode",
+    "left": {
+      "type": "NumberNode",
+      "value": 3
+    },
+    "operator": "*",
+    "right": {
+      "type": "NumberNode",
+      "value": 4
+    }
+  }
+}
+
+Expression: (2 + 3) * 4
+{
+  "type": "BinaryOpNode",
+  "left": {
+    "type": "BinaryOpNode",
+    "left": {
+      "type": "NumberNode",
+      "value": 2
+    },
+    "operator": "+",
+    "right": {
+      "type": "NumberNode",
+      "value": 3
+    }
+  },
+  "operator": "*",
+  "right": {
+    "type": "NumberNode",
+    "value": 4
+  }
+}
+
+Expression: total + 2.5
+{
+  "type": "BinaryOpNode",
+  "left": {
+    "type": "VariableNode",
+    "name": "total"
+  },
+  "operator": "+",
+  "right": {
+    "type": "NumberNode",
+    "value": 2.5
+  }
+}
+
