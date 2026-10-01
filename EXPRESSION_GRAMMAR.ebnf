@@ -1,0 +1,22 @@
+(* Expression grammar for snake part 3 (expression portion) *)
+
+(* Addition and subtraction: *)
+expression = term, { ("+" | "-"), term } ;
+
+(* Multiplication and division: *)
+term = factor, { ("*" | "/"), factor } ;
+
+(* Numbers, variables, and expressions in parentheses: *)
+factor = number | identifier | "(", expression, ")" ;
+
+(* Whole numbers or decimals: *)
+number = digit, { digit }, [ ".", digit, { digit } ] ;
+
+(* Variable names start with a letter: *)
+identifier = letter, { letter | digit | "_" } ;
+
+letter = "A" ... "Z" | "a" ... "z" ;
+digit = "0" ... "9" ;
+
+
+(* This file covers the expressions for my part, so you guys will still need to add the statement rules. The ... just means all characters in that range, and keywords cannot be used as variable names. The lexer already reads numbers and variable names, but it also accepts some non-english characters, so we still need to make that match the grammar. Booleans, function calls, comparisons, and negative numbers written like -5 are not included in this part, but subtraction works. My expression demo doesn't use semicolons, but the statements will need them. *)
