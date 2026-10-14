@@ -43,6 +43,22 @@ class ExpressionParser:
         return node
 
     def parse_expression(self):
+        # comparisons have lower precedence than arithmetic
+        node = self.parse_arithmetic()
+        comparison_types = (
+            TokenType.EQUAL, TokenType.NOT_EQUAL,
+            TokenType.LESS, TokenType.GREATER,
+            TokenType.LESS_EQUAL, TokenType.GREATER_EQUAL,
+        )
+        if self.current_token().type in comparison_types:
+            operator = self.advance().value
+            right = self.parse_arithmetic()
+            node = BinaryOpNode(node, operator, right)
+            if self.current_token().type in comparison_types:
+                raise self.error("chained comparisons are not supported")
+        return node
+
+    def parse_arithmetic(self):
         # addition and subtraction have lower precedence
         node = self.parse_term()
         while self.current_token().type in (TokenType.PLUS, TokenType.MINUS):

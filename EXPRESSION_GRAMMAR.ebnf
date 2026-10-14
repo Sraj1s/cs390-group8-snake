@@ -1,7 +1,11 @@
-(* Expression grammar for snake part 3 (expression portion) *)
+(* Expression grammar for snake part 4 *)
+
+(* Optional comparison expressions: *)
+expression = arithmetic, [ comparison, arithmetic ] ;
+comparison = "==" | "!=" | "<" | ">" | "<=" | ">=" ;
 
 (* Addition and subtraction: *)
-expression = term, { ("+" | "-"), term } ;
+arithmetic = term, { ("+" | "-"), term } ;
 
 (* Multiplication and division: *)
 term = factor, { ("*" | "/"), factor } ;
@@ -9,14 +13,16 @@ term = factor, { ("*" | "/"), factor } ;
 (* Numbers, variables, and expressions in parentheses: *)
 factor = number | identifier | "(", expression, ")" ;
 
-(* Whole numbers or decimals: *)
 number = digit, { digit }, [ ".", digit, { digit } ] ;
-
-(* Variable names start with a letter: *)
 identifier = letter, { letter | digit | "_" } ;
-
 letter = "A" ... "Z" | "a" ... "z" ;
 digit = "0" ... "9" ;
 
-
-(* This file covers the expressions for my part, so you guys will still need to add the statement rules. The ... just means all characters in that range, and keywords cannot be used as variable names. The lexer already reads numbers and variable names, but it also accepts some non-english characters, so we still need to make that match the grammar. Booleans, function calls, comparisons, and negative numbers written like -5 are not included in this part, but subtraction works. My expression demo doesn't use semicolons, but the statements will need them. *)
+(* The ... indicates all characters in the range. Keywords may not be used as
+variable names. The current lexer allows some non-English digits and
+characters but they have to be made to be compatible with the full grammar.
+Other features not in this grammar include function calls, boolean constants, 
+statements, and unary minus. Comparisons can only be between numbers and produce
+a boolean result. Chained comparisons like 1 < 2 < 3 are not allowed. Comparisons
+may appear inside parentheses, but using a boolean in arithmetic or in another
+comparison is an error. *)
