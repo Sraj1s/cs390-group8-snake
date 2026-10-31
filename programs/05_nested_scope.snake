@@ -1,0 +1,13 @@
+// Nested if inside a while loop, with a variable declared inside the loop body
+var total = 0;
+var n = 1;
+while n <= 6 {
+    var square = n * n;
+    if square > 10 {
+        total = total + square;
+    } else {
+        display(square);
+    }
+    n = n + 1;
+}
+display(total);

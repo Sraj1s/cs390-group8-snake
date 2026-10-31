@@ -1,0 +1,14 @@
+// While loops
+var x = 1;
+while (x <= 5) {
+    display(x);
+    x = x + 1;
+}
+
+var sum = 0;
+var i = 1;
+while i <= 10 {
+    sum = sum + i;
+    i = i + 1;
+}
+display(sum);

@@ -1,0 +1,7 @@
+var x = 10;
+define test() {
+    var x = 20;
+    display(x);
+}
+test();
+display(x);

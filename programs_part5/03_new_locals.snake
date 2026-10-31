@@ -1,0 +1,6 @@
+define increment(n) {
+    var local = n + 1;
+    return local;
+}
+display(increment(4));
+display(increment(9));

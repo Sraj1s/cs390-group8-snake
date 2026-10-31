@@ -1,0 +1,10 @@
+ // Variables and arithmetic with operator precedence
+var x = 10;
+var y = x + 5;
+display(y);
+x = x + 1;
+display(x);
+display(2 + 3 * 4);
+display((2 + 3) * 4);
+display(9 / 2);
+display(10 - 4 - 3);

@@ -55,4 +55,3 @@ Expression: total + 2.5
     "value": 2.5
   }
 }
-

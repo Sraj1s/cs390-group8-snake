@@ -1,0 +1,11 @@
+ // All six comparison operators
+var a = 5;
+var b = 8;
+display(a == b);
+display(a != b);
+display(a < b);
+display(a > b);
+display(a <= 5);
+display(b >= 9);
+var same = a == 5;
+display(same);

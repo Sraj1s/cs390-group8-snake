@@ -1,5 +1,5 @@
 from tokens import TokenType
-from expression_nodes import NumberNode, VariableNode, BinaryOpNode
+from expression_nodes import NumberNode, VariableNode, BinaryOpNode, BooleanNode
 
 
 class ParseError(SyntaxError):
@@ -37,13 +37,11 @@ class ExpressionParser:
         return self.advance()
 
     def parse(self):
-        # parse a complete expression
         node = self.parse_expression()
         self.expect(TokenType.EOF, "expected end of expression")
         return node
 
     def parse_expression(self):
-        # comparisons have lower precedence than arithmetic
         node = self.parse_arithmetic()
         comparison_types = (
             TokenType.EQUAL, TokenType.NOT_EQUAL,
@@ -59,40 +57,41 @@ class ExpressionParser:
         return node
 
     def parse_arithmetic(self):
-        # addition and subtraction have lower precedence
         node = self.parse_term()
         while self.current_token().type in (TokenType.PLUS, TokenType.MINUS):
             operator = self.current_token().value
             self.advance()
             right = self.parse_term()
-            # keep the previous node on the left to group operators left to right
             node = BinaryOpNode(node, operator, right)
         return node
 
     def parse_term(self):
-        # multiplication and division have higher precedence
         node = self.parse_factor()
         while self.current_token().type in (TokenType.MULTIPLY, TokenType.DIVIDE):
             operator = self.current_token().value
             self.advance()
             right = self.parse_factor()
-            # keep the previous node on the left to group operators left to right
             node = BinaryOpNode(node, operator, right)
         return node
 
     def parse_factor(self):
-        # a factor is either a number, variable or a parenthesized expression
         token = self.current_token()
 
         if token.type == TokenType.NUMBER:
             self.advance()
             if "." in token.value:
-                # if the token has a decimal, make a float
                 value = float(token.value)
             else:
-                # otherwise make an int
                 value = int(token.value)
             return NumberNode(value)
+
+        if token.type == TokenType.TRUE:
+            self.advance()
+            return BooleanNode(True)
+
+        if token.type == TokenType.FALSE:
+            self.advance()
+            return BooleanNode(False)
 
         if token.type == TokenType.IDENTIFIER:
             self.advance()
@@ -104,4 +103,4 @@ class ExpressionParser:
             self.expect(TokenType.RPAREN, "expected ')' to close expression")
             return node
 
-        raise self.error("expected a number, variable, or '('")
+        raise self.error("expected a number, variable, true/false, or '('")

@@ -1,0 +1,9 @@
+var x = 10;
+define read() {
+    return x;
+}
+define caller() {
+    var x = 99;
+    return read();
+}
+display(caller());

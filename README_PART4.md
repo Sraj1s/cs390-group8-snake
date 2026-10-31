@@ -1,89 +1,141 @@
-Snake Interpreter - Part 4
+# Snake Interpreter - Part 4
 
-Files:
+Part 4 makes Snake executable. The interpreter walks the syntax tree built by
+the parser and runs the program.
 
-- interpreter.py - Performs assignment, printing, comparisons,
-  and arithmetic evaluation
-- environment.py - Stores, retrieves, and updates variable values
-- statement_nodes.py - Defines nodes for print and assignment statements
-- runtime_errors.py - Runtime error for use by interpreter
-- expression_parser.py - Modified to support comparisons between
-  arithmetic expressions
-- EXPRESSION_GRAMMAR.ebnf - Grammar for expressions with support
-  for comparisons between arithmetic expressions
-- demo_interpreter.py - A demo of the interpreter that uses
-  statement nodes
+## Files
 
-Running:
+New in Part 4:
 
-1. Make sure Python 3.8 or later is installed.
-2. Put these files in the same directory as the previous
-   parts' lexer.py, tokens.py, and expression_nodes.py
-3. Replace the previous expression_parser.py and EXPRESSION_GRAMMAR.ebnf
-   with these new ones. Keep the other files from the previous parts.
-4. Open a terminal in the project directory.
-5. Run:
+- `interpreter.py` - Executes statements and evaluates expressions.
+- `environment.py` - Symbol table that stores, retrieves, and updates variables.
+- `runtime_errors.py` - `SnakeRuntimeError`, raised for errors while a program runs.
+- `run_snake.py` - Runs a Snake program file from the command line.
+- `demo_interpreter.py` - Small demo that builds statement nodes directly.
+- `programs/` - Test programs (`.snake`) and their expected output (`.expected.txt`).
+- `PART4_GRAMMAR.ebnf` - Updated grammar. It replaces `PART3_GRAMMAR.ebnf` and `EXPRESSION_GRAMMAR.ebnf`.
 
-   py demo_interpreter.py
+Updated from Part 3:
 
-This will demonstrate variable declaration and assignment,
-printing, arithmetic, all six comparisons, and runtime errors.
-Statement nodes are constructed directly in the demo since the
-full statement parser is not yet implemented.
+- `expression_nodes.py` - Added `BooleanNode`.
+- `expression_parser.py` - Added comparisons and `true`/`false`.
+- `statement_nodes.py` - Added `BlockNode`, `IfNode`, `WhileNode`. `AssignmentNode` now has a `declare` flag and its value field is named `expression` (it was `value`).
+- `parser.py` - Added `if`/`else`, `while`, and blocks. `var` now builds a declaration node.
+- `test_parser.py` - Updated for the renamed `AssignmentNode` field.
 
-Expected output from the demo:
+Unchanged from earlier parts: `tokens.py`, `lexer.py`, `test_lexer.py`, `test_expression_parser.py`, `demo_expressions.py`, `expression_ast_output.txt`.
+
+## How to Run
+
+Requires Python 3.10 or newer. (Older versions have a built-in module named
+`parser` that can conflict with our `parser.py`.) Keep all files in one folder.
+
+Run a Snake program:
 
 ```text
-15
-11
-14
-20
-4.5
-x == 11 -> True
-x != 11 -> False
-x < y -> True
-x > y -> False
-x <= 11 -> True
-x >= 12 -> False
-Runtime error: Undefined variable 'missing'
-Runtime error: Division by zero
-Runtime error: Operation requires numeric values
+py run_snake.py programs/01_arithmetic.snake
 ```
 
-The demo was run while the code was being implemented and produced
-the expected output. 
+Run the earlier tests:
 
-The expression parser tests can be run with:
-
+```text
+py test_lexer.py
 py test_expression_parser.py
+py test_parser.py
+```
 
-The expression parser supports parentheses and operator precedence
-for arithmetic operations. Comparisons are evaluated with lower
-precedence than arithmetic. Comparisons supported by the interpreter
-are: ==, !=, <, >, <=, and >=. All comparisons use numeric
-values and return either True or False. Chained comparisons
-(like 1 < 2 < 3) are not supported. Boolean return values can
-be printed or assigned to variables but cannot be used in arithmetic.
-Division can result in a decimal. Integer results are printed
-without a decimal.
+Run the demo:
 
-The environment uses a Python dictionary to store variable names
-and their values. For example, declaring variable x to be 10
-will store the variable name x with a value of 10. When x is
-read from the environment its stored value is returned. When
-a new value is assigned to x it will be updated. All blocks
-share the same environment.
+```text
+py demo_interpreter.py
+```
 
-AssignmentNode(name, expression, declare=True) creates a
-new variable with the given name and value (from expression).
-AssignmentNode(name, expression) assigns a new value to an
-existing variable given its name and value (from expression).
-PrintNode(expression) prints the value of the given expression.
-Interpreter.run(statements) runs a list of statement nodes
-in order.
+If `py` is unavailable, use `python` or `python3`.
 
-Accessing an undefined variable, dividing by zero, performing an
-invalid operation, or declaring the same variable more than once
-will result in a SnakeRuntimeError.
+## Language Features
 
-GitHub Link for Group 8: https://github.com/Sraj1s/cs390-group8-snake
+- Variables: `var x = 10;` declares, `x = x + 1;` updates.
+- Arithmetic: `+ - * /` with normal precedence and parentheses. Division can give a decimal.
+- Comparisons: `== != < > <= >=`. They give `true` or `false`.
+- `true` and `false` values.
+- Output: `display(x);` prints numbers and `true`/`false`. Whole-number decimals print without `.0` (so `10 / 2` prints `5`).
+- If/else: the condition works with or without parentheses.
+- While loops.
+- Comments start with `//`.
+
+Example:
+
+```text
+var x = 1;
+while (x <= 5) {
+    display(x);
+    x = x + 1;
+}
+```
+
+Not included yet: `define`, `return`, function calls, and negative numbers written like `-5`.
+
+## Environment / Symbol Table
+
+`Environment` holds a Python dictionary that maps each variable name to its
+current value, plus a link to the enclosing environment (`parent`).
+
+- `declare(name, value)` adds a new variable to the current scope. It is an error if the name already exists in that scope.
+- `get(name)` returns the value. It looks in the current scope first, then each enclosing scope. It is an error if the name is not found anywhere.
+- `assign(name, value)` updates the variable in the nearest scope that has it. It is an error if the name is not found.
+
+The program starts with one global environment. Every `{ }` block (an `if`,
+`else`, or `while` body) runs in a new child environment. So:
+
+- Code inside a block can read and update variables declared outside it.
+- A variable declared inside a block disappears when the block ends.
+- A `var` inside a loop body works on every pass, because each pass gets a fresh scope.
+
+## Runtime Errors
+
+All runtime errors raise `SnakeRuntimeError` and `run_snake.py` prints them as
+`Runtime error: <message>`.
+
+| Error | Message |
+|---|---|
+| Undefined variable (read or update) | `Undefined variable 'x'` |
+| Declaring a name twice in one scope | `Variable 'x' is already declared` |
+| Division by zero | `Division by zero` |
+| Arithmetic or comparison on a true/false value | `Operation requires numeric values` |
+| `if` or `while` condition that is not true/false | `Condition must be true or false` |
+
+Syntax errors are reported as `Syntax error: ...` with the line and column.
+Comparisons only work on numbers, and chained comparisons like `1 < 2 < 3` are
+a syntax error.
+
+## Test Programs
+
+Each program in `programs/` has a matching `.expected.txt` with the expected
+output. Each program was run with `py run_snake.py programs/<name>.snake` and the
+actual output was identical to the expected output (error messages included).
+
+| Program | What it shows | Expected / actual output |
+|---|---|---|
+| `01_arithmetic.snake` | Variables, update, precedence, parentheses, decimal division | 15, 11, 14, 20, 4.5, 3 |
+| `02_comparisons.snake` | All six comparisons and a comparison stored in a variable | false, true, true, false, true, false, true |
+| `03_if_else.snake` | If/else, with and without parentheses, a true/false variable as the condition | 8, 0, 1 |
+| `04_while_loop.snake` | While loops, counting and summing | 1, 2, 3, 4, 5, 55 |
+| `05_nested_scope.snake` | An `if` inside a `while`, with a `var` declared in the loop body | 1, 4, 9, 77 |
+| `06_error_undefined.snake` | Undefined variable | 1, then `Runtime error: Undefined variable 'missing'` |
+| `07_error_division.snake` | Division by zero | 5, then `Runtime error: Division by zero` |
+| `08_error_invalid.snake` | Arithmetic on a true/false value | true, then `Runtime error: Operation requires numeric values` |
+| `09_error_condition.snake` | Non-boolean condition | `Runtime error: Condition must be true or false` |
+
+A program stops at the first runtime error, so any lines after the error do not run.
+
+## How the Pieces Fit Together
+
+`run_snake.py` reads the file, `Lexer` turns the text into tokens, `Parser`
+builds the syntax tree (`ProgramNode` and the statement and expression nodes),
+and `Interpreter` executes it.
+
+## GitHub
+
+Group 8 Repository:
+
+https://github.com/Sraj1s/cs390-group8-snake

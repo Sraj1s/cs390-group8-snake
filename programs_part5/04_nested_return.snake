@@ -1,0 +1,9 @@
+define choose(n) {
+    if (n > 0) {
+        return 1;
+    }
+    return 0;
+    display(999);
+}
+display(choose(3));
+display(choose(0));
