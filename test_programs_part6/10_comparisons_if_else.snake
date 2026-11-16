@@ -1,0 +1,13 @@
+var score = 7;
+display(score == 7);
+display(score != 7);
+if score >= 5 {
+    display(1);
+} else {
+    display(0);
+}
+if score < 5 {
+    display(1);
+} else {
+    display(0);
+}

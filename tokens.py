@@ -11,6 +11,9 @@ class TokenType(Enum):
     WHILE = "WHILE"
     DEFINE = "DEFINE"
     RETURN = "RETURN"
+    FOR = "FOR"
+    BREAK = "BREAK"
+    CONTINUE = "CONTINUE"
     TRUE = "TRUE"
     FALSE = "FALSE"
 

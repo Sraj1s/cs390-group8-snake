@@ -1,0 +1,4 @@
+// Runtime error: division by zero
+var x = 10;
+display(x / 2);
+display(x / (5 - 5));

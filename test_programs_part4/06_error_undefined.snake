@@ -1,0 +1,5 @@
+// Runtime error: undefined variable
+var x = 1;
+display(x);
+display(missing);
+display(2);

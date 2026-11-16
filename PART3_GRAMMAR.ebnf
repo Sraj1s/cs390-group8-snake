@@ -1,0 +1,73 @@
+(* Snake Part 4 Grammar *)
+
+(* A program can contain zero or more statements *)
+program = { statement } ;
+
+(* Statements supported in Part 4 *)
+statement = variable_declaration
+          | assignment
+          | display_statement
+          | if_statement
+          | while_statement ;
+
+(* Declares a new variable in the current scope *)
+variable_declaration = "var", identifier, "=", expression, ";" ;
+
+(* Assigns a new value to a variable that was already declared *)
+assignment = identifier, "=", expression, ";" ;
+
+(* Displays the value of an expression *)
+display_statement = "display", "(", expression, ")", ";" ;
+
+(* The condition may be written with or without parentheses.
+   The condition must evaluate to true or false at runtime. *)
+if_statement = "if", expression, block, [ "else", block ] ;
+
+while_statement = "while", expression, block ;
+
+(* A block has its own scope and can see variables declared outside it *)
+block = "{", { statement }, "}" ;
+
+
+(* A comparison has lower precedence than arithmetic.
+   Only one comparison is allowed, so 1 < 2 < 3 is a syntax error. *)
+expression = arithmetic, [ comparison, arithmetic ] ;
+
+comparison = "==" | "!=" | "<" | ">" | "<=" | ">=" ;
+
+(* Addition and subtraction *)
+arithmetic = term, { ("+" | "-"), term } ;
+
+(* Multiplication and division *)
+term = factor, { ("*" | "/"), factor } ;
+
+(* Numbers, true/false, variables, and expressions in parentheses *)
+factor = number
+       | boolean
+       | identifier
+       | "(", expression, ")" ;
+
+boolean = "true" | "false" ;
+
+(* Whole numbers or decimals *)
+number = digit, { digit }, [ ".", digit, { digit } ] ;
+
+(* Variable names start with a letter.
+   Keywords (var, display, if, else, while, define, return, true, false)
+   cannot be used as variable names. *)
+identifier = letter, { letter | digit | "_" } ;
+
+letter = "A" ... "Z" | "a" ... "z" ;
+
+digit = "0" ... "9" ;
+
+
+(* Notes
+   - A comment starts with // and continues to the end of the line.
+     Comments are removed by the lexer and are not part of the grammar.
+   - The ... means every character in that range.
+   - Runtime rules that the grammar cannot show: comparisons and arithmetic
+     need numbers, if/while conditions need true or false, and a variable
+     must be declared before it is used or updated.
+   - Not included yet: define, return, function calls, and negative numbers
+     written like -5 (subtraction such as 5 - 3 works). *)

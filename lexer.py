@@ -10,6 +10,9 @@ KEYWORDS = {
     "while": TokenType.WHILE,
     "define": TokenType.DEFINE,
     "return": TokenType.RETURN,
+    "for": TokenType.FOR,
+    "break": TokenType.BREAK,
+    "continue": TokenType.CONTINUE,
     "true": TokenType.TRUE,
     "false": TokenType.FALSE
 }

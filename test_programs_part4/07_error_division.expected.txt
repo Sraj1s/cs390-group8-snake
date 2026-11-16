@@ -1,0 +1,2 @@
+5
+Runtime error: Division by zero

@@ -1,0 +1,4 @@
+// Runtime error: invalid operation (arithmetic on a true/false value)
+var flag = 1 < 2;
+display(flag);
+display(flag + 1);

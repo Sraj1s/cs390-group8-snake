@@ -1,5 +1,8 @@
 from tokens import TokenType
-from expression_nodes import NumberNode, VariableNode, BinaryOpNode
+# FunctionCallNode in part 5 is new for calls like add(10, 20)
+from expression_nodes import (
+    NumberNode, VariableNode, BinaryOpNode, BooleanNode, FunctionCallNode
+)
 
 
 class ParseError(SyntaxError):
@@ -37,49 +40,67 @@ class ExpressionParser:
         return self.advance()
 
     def parse(self):
-        # parse a complete expression
         node = self.parse_expression()
         self.expect(TokenType.EOF, "expected end of expression")
         return node
 
     def parse_expression(self):
-        # addition and subtraction have lower precedence
+        node = self.parse_arithmetic()
+        comparison_types = (
+            TokenType.EQUAL, TokenType.NOT_EQUAL,
+            TokenType.LESS, TokenType.GREATER,
+            TokenType.LESS_EQUAL, TokenType.GREATER_EQUAL,
+        )
+        if self.current_token().type in comparison_types:
+            operator = self.advance().value
+            right = self.parse_arithmetic()
+            node = BinaryOpNode(node, operator, right)
+            if self.current_token().type in comparison_types:
+                raise self.error("chained comparisons are not supported")
+        return node
+
+    def parse_arithmetic(self):
         node = self.parse_term()
         while self.current_token().type in (TokenType.PLUS, TokenType.MINUS):
             operator = self.current_token().value
             self.advance()
             right = self.parse_term()
-            # keep the previous node on the left to group operators left to right
             node = BinaryOpNode(node, operator, right)
         return node
 
     def parse_term(self):
-        # multiplication and division have higher precedence
         node = self.parse_factor()
         while self.current_token().type in (TokenType.MULTIPLY, TokenType.DIVIDE):
             operator = self.current_token().value
             self.advance()
             right = self.parse_factor()
-            # keep the previous node on the left to group operators left to right
             node = BinaryOpNode(node, operator, right)
         return node
 
     def parse_factor(self):
-        # a factor is either a number, variable or a parenthesized expression
         token = self.current_token()
 
         if token.type == TokenType.NUMBER:
             self.advance()
             if "." in token.value:
-                # if the token has a decimal, make a float
                 value = float(token.value)
             else:
-                # otherwise make an int
                 value = int(token.value)
             return NumberNode(value)
 
+        if token.type == TokenType.TRUE:
+            self.advance()
+            return BooleanNode(True)
+
+        if token.type == TokenType.FALSE:
+            self.advance()
+            return BooleanNode(False)
+
         if token.type == TokenType.IDENTIFIER:
             self.advance()
+            # a name followed by '(' is a function call, otherwise it's a variable
+            if self.current_token().type == TokenType.LPAREN:
+                return self.parse_call(token.value)
             return VariableNode(token.value)
 
         if token.type == TokenType.LPAREN:
@@ -88,4 +109,22 @@ class ExpressionParser:
             self.expect(TokenType.RPAREN, "expected ')' to close expression")
             return node
 
-        raise self.error("expected a number, variable, or '('")
+        raise self.error("expected a number, variable, true/false, or '('")
+        
+    def parse_call(self, name):
+        # parses a function call like add(10, 20), the name is already consumed
+        self.expect(TokenType.LPAREN, "expected '(' after function name")
+
+        # calls can have zero arguments, so only parse them if it isn't ')'
+        arguments = []
+        if self.current_token().type != TokenType.RPAREN:
+            arguments.append(self.parse_expression())
+            # each extra argument is separated by a comma
+            while self.current_token().type == TokenType.COMMA:
+                self.advance()
+                arguments.append(self.parse_expression())
+
+        self.expect(TokenType.RPAREN, "expected ')' after arguments")
+        return FunctionCallNode(name, arguments)
+
+       

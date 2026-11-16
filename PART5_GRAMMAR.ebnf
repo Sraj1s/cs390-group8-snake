@@ -1,0 +1,108 @@
+
+(* Snake Part 5 Grammar *)
+
+(* A program can contain zero or more statements *)
+program = { statement } ;
+
+(* Statements supported in Part 5 *)
+statement = variable_declaration
+          | assignment
+          | display_statement
+          | if_statement
+          | while_statement
+          | function_definition
+          | return_statement
+          | function_call_statement
+          | for_statement
+          | break_statement
+          | continue_statement ;
+
+(* Declares a new variable in the current scope *)
+variable_declaration = "var", identifier, "=", expression, ";" ;
+
+(* Assigns a new value to a variable that was already declared *)
+assignment = identifier, "=", expression, ";" ;
+
+(* Displays the value of an expression *)
+display_statement = "display", "(", expression, ")", ";" ;
+
+(* The condition may be written with or without parentheses.
+   The condition must evaluate to true or false at runtime. *)
+if_statement = "if", expression, block, [ "else", block ] ;
+
+while_statement = "while", expression, block ;
+
+(* A block has its own scope and can see variables declared outside it *)
+block = "{", { statement }, "}" ;
+
+
+(* Part 5: function definitions, parameters, calls, and returns *)
+
+(* Functions can have zero or more parameters *)
+function_definition = "define", identifier, "(",
+                      [ parameter_list ], ")", block ;
+
+parameter_list = identifier, { ",", identifier } ;
+
+(* Functions can be called with zero or more arguments *)
+function_call = identifier, "(", [ argument_list ], ")" ;
+
+argument_list = expression, { ",", expression } ;
+
+(* A function call can also be used as a statement *)
+function_call_statement = function_call, ";" ;
+
+(* Return a value or return without a value *)
+return_statement = "return", [ expression ], ";" ;
+
+
+(* Part 5 extension: for loops, break, and continue *)
+
+(* The initializer ends with a semicolon.
+   The condition is followed by a semicolon.
+   The update has no trailing semicolon. *)
+for_statement = "for", for_initializer, expression, ";",
+                for_update, block ;
+
+for_initializer = variable_declaration | assignment ;
+
+for_update = identifier, "=", expression ;
+
+break_statement = "break", ";" ;
+
+continue_statement = "continue", ";" ;
+
+
+(* A comparison has lower precedence than arithmetic.
+   Only one comparison is allowed, so 1 < 2 < 3 is a syntax error. *)
+expression = arithmetic, [ comparison, arithmetic ] ;
+
+comparison = "==" | "!=" | "<" | ">" | "<=" | ">=" ;
+
+(* Addition and subtraction *)
+arithmetic = term, { ("+" | "-"), term } ;
+
+(* Multiplication and division *)
+term = factor, { ("*" | "/"), factor } ;
+
+(* Part 5: function calls can be used inside expressions *)
+factor = number
+       | boolean
+       | function_call
+       | identifier
+       | "(", expression, ")" ;
+
+boolean = "true" | "false" ;
+
+(* Whole numbers or decimals *)
+number = digit, { digit }, [ ".", digit, { digit } ] ;
+
+(* Variable names start with a letter.
+   Keywords (var, display, if, else, while, define, return,
+   for, break, continue, true, false)
+   cannot be used as variable names. *)
+identifier = letter, { letter | digit | "_" } ;
+
+letter = "A" ... "Z" | "a" ... "z" ;
+
+digit = "0" ... "9" ;

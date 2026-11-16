@@ -1,0 +1,2 @@
+class SnakeRuntimeError(Exception):
+    pass

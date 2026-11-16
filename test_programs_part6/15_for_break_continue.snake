@@ -1,0 +1,16 @@
+var total = 0;
+
+for var i = 1; i <= 6; i = i + 1 {
+    if i == 2 {
+        continue;
+    }
+
+    if i == 5 {
+        break;
+    }
+
+    display(i);
+    total = total + i;
+}
+
+display(total);

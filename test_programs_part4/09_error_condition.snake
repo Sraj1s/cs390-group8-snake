@@ -1,0 +1,5 @@
+// Runtime error: a condition must be true or false
+var x = 5;
+if x {
+    display(x);
+}

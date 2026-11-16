@@ -1,0 +1,20 @@
+// If and else, with and without parentheses around the condition
+var x = 8;
+if x > 7 {
+    display(x);
+} else {
+    display(0);
+}
+
+var y = 3;
+if (y >= 10) {
+    display(y);
+}
+else {
+    display(0);
+}
+
+var correct = true;
+if correct {
+    display(1);
+}
